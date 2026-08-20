@@ -1,0 +1,54 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile for authentication and team role management in SpatialAI Studio",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email", "description": "User primary email address" },
+        "displayName": { "type": "string", "description": "Display name of the engineer/user" },
+        "photoURL": { "type": "string", "description": "Avatar image URL" },
+        "role": { "type": "string", "enum": ["lead_architect", "cad_engineer", "viewer"], "description": "Spatial computing engineering role" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" }
+      },
+      "required": ["userId", "email", "role", "createdAt"]
+    },
+    "SpatialAssetDoc": {
+      "title": "SpatialAssetDoc",
+      "description": "Saved 3D CAD parametric asset with PBR materials, diagnostics, and spatial properties",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique asset identifier" },
+        "userId": { "type": "string", "description": "Owner Firebase UID" },
+        "title": { "type": "string", "description": "Asset name" },
+        "description": { "type": "string", "description": "Technical description" },
+        "category": { "type": "string", "description": "CAD category (drone, satellite, reactor, etc.)" },
+        "prompt": { "type": "string", "description": "AI prompt used for synthesis" },
+        "materials": { "type": "object", "description": "PBR multi-layer material properties" },
+        "dimensions": { "type": "object", "description": "Parametric bounding dimensions" },
+        "diagnostics": { "type": "object", "description": "FEA structural stress matrix and safety factors" },
+        "annotations": { "type": "array", "description": "List of spatial 3D caliper inspection pins" },
+        "lighting": { "type": "string", "description": "HDRI lighting environment preset" },
+        "isPublic": { "type": "boolean", "description": "Whether asset is shared with public team gallery" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["id", "userId", "title", "category", "materials", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user account profile information"
+    },
+    "/users/{userId}/assets/{assetId}": {
+      "schema": "SpatialAssetDoc",
+      "description": "Stores user-authored 3D parametric CAD models and saved scenes"
+    },
+    "/publicAssets/{assetId}": {
+      "schema": "SpatialAssetDoc",
+      "description": "Stores community and team shared 3D spatial models"
+    }
+  }
+}
